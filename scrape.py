@@ -1,16 +1,13 @@
-import urllib3, sys
-address = sys.argv[1]
-html = urllib2.urlopen(address).read()
+from lxml import html
+import requests
 
-from BeautifulSoup import BeautifulSoup
-soup = BeautifulSoup(html)
-from BeautifulSoup import NavigableString
+page = requests.get('http://econpy.pythonanywhere.com/ex/001.html')
+tree = html.fromstring(page.text)
 
-def prntText(tags):
-    for tag in tags:
-        if tag.__class__ == NavigableString:
-            print tag,
-        else:
-            printText(tag)
+#This will create a list of buyers:
+buyers = tree.xpath('//div[@title="buyer-name"]/text()')
+#This will create a list of prices
+prices = tree.xpath('//span[@class="item-price"]/text()')
 
-printText(soup.findAll("p"))
+print 'Buyers: ', buyers
+print 'Prices: ', prices
